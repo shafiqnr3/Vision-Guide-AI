@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai"); // 'const' small letters mein
+const { GoogleGenerativeAI } = require("@google/generative-ai"); // 'const' hamesha small letters mein hota hai
 
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
         const { prompt, image, isImage } = req.body;
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // Correct Model Name (Fixed 404 Error)
+        // Correct Model Name (v1beta version ke liye best hai)
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         let contents = [{
