@@ -1,6 +1,8 @@
-// 1. SECURITY CONFIG
-API_KEY = "";
-const PROXY_URL = ""; 
+// Vision Guide AI - Frontend Logic (Vercel Optimized)
+
+// 1. SECURITY CONFIG (Ab API Key yahan nahi, Vercel Dashboard mein hogi)
+const API_KEY = ""; 
+const PROXY_URL = "/api/index"; // Vercel Backend ka rasta
 
 // 2. BACK BUTTON PROTECTION
 function lockHistory() {
@@ -39,7 +41,7 @@ function toggleSendBtn() {
     btn.style.display = query.trim() !== "" ? 'flex' : 'none';
 }
 
-// 6. IMPROVED AI CALL
+// 6. IMPROVED AI CALL (Direct to Vercel API)
 async function sendToAI() { await callGeminiAI(true); }
 async function sendOnlyText() { await callGeminiAI(false); }
 
@@ -50,77 +52,53 @@ async function callGeminiAI(isImageMode) {
     const userInput = document.getElementById('userQuery').value;
     const fileInput = document.getElementById('galleryInput');
     
-    // Alert in English
     if (isImageMode && !fileInput.files[0]) {
         showCustomAlert("Please select a photo first!");
         return;
     }
-
-    // ⭐ PROFESSIONAL BILINGUAL PROMPT
-    const systemInstruction = `You are a Global Expert AI like ChatGPT-4o. Provide a detailed report.
-    First, provide the full 'A to Z' technical details in English:
-    1. GLOBAL IDENTITY
-    2. DEEP PURPOSE
-    3. INSTRUCTIONS
-    4. SAFETY & TIPS
-
-    Then, provide a very detailed and friendly summary in Roman Urdu for the user under the heading:
-    **SUMMARY IN ROMAN URDU**
-    
-    User Input: ${userInput || "Identify this photo in detail."}`;
 
     resultArea.style.display = 'block';
     output.innerHTML = '<div class="loading-pulse">Connecting to Global AI Brain...</div>';
     btn.disabled = true;
 
     try {
-        let aiFinalResponse = "";
-
-        if (PROXY_URL) {
-            const base64Img = isImageMode ? await toBase64(fileInput.files[0]) : null;
-            const response = await fetch(PROXY_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    prompt: systemInstruction,
-                    image: base64Img ? base64Img.split(',')[1] : null,
-                    isImage: isImageMode
-                })
-            });
-            const data = await response.json();
-            aiFinalResponse = data.text;
-        } else {
-            let parts = [{ text: systemInstruction }];
-            if (isImageMode) {
-                const base64 = await toBase64(fileInput.files[0]);
-                parts.push({ inline_data: { mime_type: "image/jpeg", data: base64.split(',')[1] } });
-            }
-
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: parts }] })
-            });
-
-            const data = await response.json();
-            aiFinalResponse = data.candidates[0].content.parts[0].text;
+        let imageData = null;
+        if (isImageMode) {
+            const base64 = await toBase64(fileInput.files[0]);
+            imageData = base64.split(',')[1];
         }
 
+        // Vercel Backend ko call karna
+        const response = await fetch(PROXY_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                prompt: userInput || "Identify this item in detail.",
+                image: imageData,
+                isImage: isImageMode
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) throw new Error(data.error);
+
         // Formatting logic
-        output.innerHTML = aiFinalResponse
+        output.innerHTML = data.text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
 
         resultArea.scrollIntoView({ behavior: 'smooth' });
 
     } catch (e) {
-        output.innerHTML = "<span style='color:red;'>Error: AI Connection failed. Please check your internet or API Key.</span>";
+        output.innerHTML = "<span style='color:red;'>Error: AI Connection failed. Please check Vercel Logs or API Key.</span>";
+        console.error(e);
     } finally {
         btn.disabled = false;
     }
 }
 
-// 7. PHOTO COMPRESSION
+// 7. PHOTO COMPRESSION (Base64 conversion)
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -151,30 +129,20 @@ const toBase64 = file => new Promise((resolve, reject) => {
 function listenToResult() {
     const text = document.getElementById('engOutput').innerText;
     if (!text || text.includes("Connecting")) return;
-    
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9; 
-    const voices = window.speechSynthesis.getVoices();
-    const qualityVoice = voices.find(v => v.name.includes("Google US English") || v.name.includes("English United States"));
-    if (qualityVoice) utterance.voice = qualityVoice;
     window.speechSynthesis.speak(utterance);
 }
 
 // 9. SAVE REPORT
 function saveFullReport() {
     const text = document.getElementById('engOutput').innerText;
-    if (!text || text.includes("Connecting")) {
-        showCustomAlert("Please wait for the AI report to generate!");
-        return;
-    }
-    const watermark = "\n\n--- Vision Guide AI Report ---\nDeveloped by Shafiq Ahmad";
-    const blob = new Blob([text + watermark], { type: 'text/plain' });
+    if (!text || text.includes("Connecting")) return;
+    const blob = new Blob([text + "\n\nVision Guide AI - eveloped by Shafiq Ahmad"], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = "VisionGuide_Report.txt";
     link.click();
-    showCustomAlert("Report saved to your Downloads!");
 }
 
 // 10. MODAL HELPERS
