@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai"); // 'const' small letters mein
 
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
         const { prompt, image, isImage } = req.body;
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // Yahan maine '-latest' add kiya hai jo 404 error khatam kar dega
+        // Model setup
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
         let contents = [{
@@ -22,11 +22,17 @@ module.exports = async (req, res) => {
             parts: []
         }];
 
+        // Photo check
         if (isImage && image) {
-            contents[0].parts.push({ inlineData: { mimeType: "image/jpeg", data: image } });
+            contents[0].parts.push({ 
+                inlineData: { mimeType: "image/jpeg", data: image } 
+            });
         }
         
-        contents[0].parts.push({ text: "Aap ek Expert AI hain. Is item ki poori technical detail English mein dein aur aakhir mein Roman Urdu mein Summary dein. Query: " + (prompt || "Identify this.") });
+        // Prompt setup
+        contents[0].parts.push({ 
+            text: "Aap ek Expert AI hain. Is item ki poori technical detail English mein dein aur aakhir mein Roman Urdu mein Summary dein. Query: " + (prompt || "Identify this.") 
+        });
 
         const result = await model.generateContent({ contents });
         const response = await result.response;
