@@ -14,22 +14,20 @@ module.exports = async (req, res) => {
         const { prompt, image, isImage } = req.body;
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // Model setup
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        // ⭐ FIX: Yahan se '-latest' hata diya hai taaki 404 error na aaye ⭐
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         let contents = [{
             role: "user",
             parts: []
         }];
 
-        // Photo check
         if (isImage && image) {
             contents[0].parts.push({ 
                 inlineData: { mimeType: "image/jpeg", data: image } 
             });
         }
         
-        // Prompt setup
         contents[0].parts.push({ 
             text: "Aap ek Expert AI hain. Is item ki poori technical detail English mein dein aur aakhir mein Roman Urdu mein Summary dein. Query: " + (prompt || "Identify this.") 
         });
