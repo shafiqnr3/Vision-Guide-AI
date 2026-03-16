@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
         const { prompt, image, isImage } = req.body;
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // Naye version ke liye sahi model calling
+        // Is line ko dhyan se check karein
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         let contents = [];
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
                 role: "user",
                 parts: [
                     { inlineData: { mimeType: "image/jpeg", data: image } },
-                    { text: "Aap ek Expert AI hain. Is item ki poori technical detail English mein dein aur aakhir mein Roman Urdu mein Summary dein. Query: " + (prompt || "Identify this.") }
+                    { text: "Identify this item in detail. Query: " + (prompt || "What is this?") }
                 ]
             });
         } else {
@@ -38,7 +38,6 @@ module.exports = async (req, res) => {
         res.status(200).json({ text: response.text() });
         
     } catch (error) {
-        console.error("Backend Error:", error);
         res.status(500).json({ error: error.message });
     }
 };
