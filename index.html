@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vision Guide AI - Shafiq Ahmad</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Privacy & Support Modal Styles */
+        .modal-popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 20000; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .modal-inner { background: #1c1c1e; padding: 25px; border-radius: 18px; border: 1px solid #333; color: #eee; max-width: 500px; margin: 30px auto; position: relative; }
+        .modal-inner h2 { color: #FF8C00; margin-bottom: 15px; font-size: 22px; }
+        .modal-inner h3 { color: #FF8C00; font-size: 16px; margin-top: 18px; margin-bottom: 8px; }
+        .modal-inner p, .modal-inner li { font-size: 14px; line-height: 1.5; color: #ccc; }
+        .close-modal-btn { background: #FF8C00; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; margin-top: 25px; width: 100%; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div id="splash-screen">
+    <div class="splash-content">
+        <div class="splash-logo">Vision<span>Guide</span> AI</div>
+        <p class="splash-dev" id="creator-line">Created by Shafiq Ahmad</p>
+        <button id="continue-btn" onclick="startApp()">Continue to App</button>
+    </div>
+</div>
+
+<div class="main-wrapper" id="app-main" style="display: none;">
+    <header class="app-header">
+        <h1>Vision<span>Guide</span> AI</h1>
+        <p class="dev-name">developer: <span class="my-name">Shafiq Ahmad</span></p>
+    </header>
+
+    <main class="content-area">
+        <div class="card">
+            <div class="upload-box" onclick="document.getElementById('galleryInput').click()">
+                <img id="img-view">
+                <div id="drop-text">
+                    <span style="font-size:40px">📸</span>
+                    <p>Tap to Scan Anything</p>
+                </div>
+            </div>
+            
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden onchange="handleImage(this)">
+            <input type="file" id="galleryInput" accept="image/*" hidden onchange="handleImage(this)">
+            
+            <div class="input-container">
+                <textarea id="userQuery" placeholder="Write a message (e.g., What is this used for?)" oninput="toggleSendBtn()"></textarea>
+                <button id="miniSendBtn" type="button" onclick="sendOnlyText()">➤</button>
+            </div>
+
+            <div class="btns">
+                <button class="b-sec" type="button" onclick="document.getElementById('cameraInput').click()">Camera</button>
+                <button class="b-sec" type="button" onclick="document.getElementById('galleryInput').click()">Gallery</button>
+                <button class="b-main" id="analyzeBtn" type="button" onclick="sendToAI()">Identify Photo</button>
+            </div>
+        </div>
+
+        <div id="resultArea" class="res-box" style="display: none;">
+            <div class="res-header">
+                <small class="label">AI ANALYSIS REPORT (A to Z Details)</small>
+                <div class="header-icons">
+                    <button id="speakBtn" type="button" onclick="listenToResult()">🔊</button>
+                    <button id="saveBtn" type="button" onclick="saveFullReport()" title="Save Report">💾</button>
+                </div>
+            </div>
+            <div id="engOutput" class="txt"></div>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p class="footer-text">© 2026 Vision Guide AI | All Rights Reserved</p>
+        <p class="footer-dev-text">Developed by Shafiq Ahmad</p>
+        <div class="footer-links">
+            <a href="javascript:void(0)" onclick="openModal('privacy')">Privacy Policy</a> | 
+            <a href="javascript:void(0)" onclick="openModal('support')">Developer Support</a>
+        </div>
+    </footer>
+</div>
+
+<div id="infoModal" class="modal-popup">
+    <div class="modal-inner">
+        <div id="modal-body">
+            </div>
+        <button class="close-modal-btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<div id="custom-alert" class="modal-overlay">
+    <div class="modal-box">
+        <p id="alert-message"></p>
+        <button onclick="closeAlert()">OK</button>
+    </div>
+</div>
+
+<script>
+    function openModal(type) {
+        const body = document.getElementById('modal-body');
+        if (type === 'privacy') {
+            body.innerHTML = `
+                <h2>Privacy Policy</h2>
+                <p>Vision Guide AI values your privacy.</p>
+                <h3>1. Data Usage</h3>
+                <p>We do not store your images. Photos are processed via Google Gemini AI for analysis and deleted immediately after use.</p>
+                <h3>2. Information Security</h3>
+                <p>All AI requests are handled securely through Firebase Cloud Functions to protect your data.</p>
+            `;
+        } else {
+            body.innerHTML = `
+                <h2>Developer Support</h2>
+                <p>For technical help or feedback, please contact:</p>
+                <h3>Shafiq Ahmad</h3>
+                <p><strong>Email:</strong> shafiqnr1981@gmail.com</p>
+                <p><strong>Location:</strong> Bandipora, J&K, 193502</p>
+                <h3>Support Hours</h3>
+                <p>Monday - Saturday: 10:00 AM to 6:00 PM</p>
+            `;
+        }
+        document.getElementById('infoModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('infoModal').style.display = 'none';
+    }
+</script>
+<script src="script.js"></script>
+</body>
+</html>
