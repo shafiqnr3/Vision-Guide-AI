@@ -1,8 +1,10 @@
+/* Vision Guide AI - Optimized CSS */
 :root { 
     --bright-orange: #FF8C00; 
     --bg-black: #000000; 
     --card-bg: #1c1c1e; 
     --soft-silver: #b0b0b0; 
+    --pure-white: #ffffff; /* Bilkul safed rang ke liye */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
@@ -10,7 +12,7 @@ body, html { height: 100%; width: 100%; background: var(--bg-black); color: whit
 
 /* SPLASH SCREEN */
 #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; text-align: center; }
-.splash-logo { font-size: 38px; font-weight: 900; }
+.splash-logo { font-size: 38px; font-weight: 900; color: var(--pure-white); text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.4); }
 .splash-logo span { color: var(--bright-orange); }
 .splash-dev { color: #ffffff; font-size: 13px; margin-bottom: 35px; letter-spacing: 1px; font-weight: 500; }
 #continue-btn { background: var(--bright-orange); color: white; border: none; padding: 14px 45px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; }
@@ -18,7 +20,27 @@ body, html { height: 100%; width: 100%; background: var(--bg-black); color: whit
 /* MAIN APP */
 .main-wrapper { display: flex; flex-direction: column; height: 100vh; }
 .app-header { padding: 15px; text-align: center; border-bottom: 1px solid #111; flex-shrink: 0; }
-.dev-name { color: var(--bright-orange) !important; font-size: 11px; font-weight: 900; text-transform: lowercase; margin-top: 5px; }
+
+/* Title chamakdar karne ke liye */
+.app-header h2 { 
+    color: var(--pure-white) !important; 
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2); 
+    font-weight: 800;
+}
+
+/* ⭐ YE NEW ADD KIYA HAI: 'Guide' ko orange karne ke liye ⭐ */
+.app-header h2 span {
+    color: var(--bright-orange) !important;
+}
+
+/* Developer D Capital aur Orange rang */
+.dev-name { 
+    color: var(--bright-orange) !important; 
+    font-size: 11px; 
+    font-weight: 900; 
+    text-transform: none; 
+    margin-top: 5px; 
+}
 
 .content-area { flex: 1; overflow-y: auto; padding: 15px; max-width: 450px; margin: 0 auto; width: 100%; }
 .card { background: var(--card-bg); padding: 20px; border-radius: 18px; border: 1px solid #2d2d30; margin-bottom: 15px; position: relative; }
