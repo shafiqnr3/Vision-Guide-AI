@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
         const { prompt, image, isImage } = req.body;
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
-        // ⭐ FIX: Yahan se '-latest' hata diya hai taaki 404 error na aaye ⭐
+        // Correct Model Name (Fixed 404 Error)
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         let contents = [{
